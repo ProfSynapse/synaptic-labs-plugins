@@ -35,7 +35,7 @@
         "source": "git-subdir",
         "url": "https://github.com/ProfSynapse/Professor-Synapse",
         "path": "professor-synapse-plugin",
-        "ref": "v2.5.0"
+        "ref": "v3.3.0"
       }
     }
   ]

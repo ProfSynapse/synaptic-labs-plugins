@@ -21,7 +21,7 @@ release — never from whatever happens to be on a plugin's `main`. Run
 | --- | --- | --- | --- |
 | `skill-crafter` | Build, improve, modularize, and validate Claude Code skills the right way. | `v0.1.3` | [ProfSynapse/skill-crafter](https://github.com/ProfSynapse/skill-crafter) |
 | `agentic-guardrails` | Enterprise guardrails for agentic tools: CRUA, agent workspace, sync-aware safety, policy-driven blocking. | `v0.2.2` | [ProfSynapse/agentic-guardrails-plugin](https://github.com/ProfSynapse/agentic-guardrails-plugin) (`plugin/`) |
-| `professor-synapse` | A router that summons expert agents on demand, with persistent agent-tagged memory and a summon-gate. | `v2.5.0` | [ProfSynapse/Professor-Synapse](https://github.com/ProfSynapse/Professor-Synapse) (`professor-synapse-plugin/`) |
+| `professor-synapse` | A router that summons expert agents on demand, with persistent agent-tagged memory and a summon-gate. | `v3.3.0` | [ProfSynapse/Professor-Synapse](https://github.com/ProfSynapse/Professor-Synapse) (`professor-synapse-plugin/`) |
 
 ## Add a plugin to this marketplace
 
