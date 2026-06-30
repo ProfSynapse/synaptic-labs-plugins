@@ -3,7 +3,7 @@
   "description": "Synaptic Labs plugins for Claude Code.",
   "owner": {
     "name": "Joseph Rosenbaum",
-    "email": "connect2synapse@gmail.com"
+    "email": "profsynapse@synapticlabs.ai"
   },
   "plugins": [
     {
