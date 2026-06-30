@@ -1,0 +1,20 @@
+{
+  "name": "synaptic-labs",
+  "description": "Synaptic Labs plugins for Claude Code.",
+  "owner": {
+    "name": "Joseph Rosenbaum",
+    "email": "connect2synapse@gmail.com"
+  },
+  "plugins": [
+    {
+      "name": "skill-crafter",
+      "description": "Build, improve, modularize, and validate Claude Code skills the right way.",
+      "version": "0.1.2",
+      "source": {
+        "source": "github",
+        "repo": "ProfSynapse/skill-crafter",
+        "ref": "v0.1.2"
+      }
+    }
+  ]
+}
