@@ -1,0 +1,25 @@
+{
+  "name": "synaptic-labs",
+  "interface": {
+    "displayName": "Synaptic Labs"
+  },
+  "plugins": [
+    {
+      "name": "agentic-guardrails",
+      "source": {
+        "source": "git-subdir",
+        "url": "https://github.com/ProfSynapse/agentic-guardrails-plugin.git",
+        "path": "./plugin",
+        "ref": "v0.2.2"
+      },
+      "interface": {
+        "displayName": "Agentic Guardrails"
+      },
+      "category": "Productivity",
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      }
+    }
+  ]
+}
