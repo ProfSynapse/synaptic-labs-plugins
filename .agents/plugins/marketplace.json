@@ -5,6 +5,21 @@
   },
   "plugins": [
     {
+      "name": "skill-crafter",
+      "source": {
+        "source": "url",
+        "url": "https://github.com/ProfSynapse/skill-crafter.git",
+        "ref": "v0.1.4"
+      },
+      "interface": {
+        "displayName": "Skill Crafter"
+      },
+      "category": "Productivity",
+      "policy": {
+        "installation": "AVAILABLE"
+      }
+    },
+    {
       "name": "agentic-guardrails",
       "source": {
         "source": "git-subdir",

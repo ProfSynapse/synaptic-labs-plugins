@@ -29,7 +29,7 @@ Claude; `codex plugin marketplace upgrade` in Codex).
 
 | Plugin | Claude | Codex | Description |
 | --- | --- | --- | --- |
-| `skill-crafter` | `v0.1.3` | — | Build, improve, modularize, and validate skills the right way. |
+| `skill-crafter` | `v0.1.4` | `v0.1.4` | Build, improve, modularize, and validate skills the right way. |
 | `agentic-guardrails` | `v0.2.2` | `v0.2.2` | Enterprise guardrails: CRUA, agent workspace, sync-aware safety, policy-driven blocking. |
 | `professor-synapse` | `v3.3.0` | — | A router that summons expert agents on demand, with agent-tagged memory and a summon-gate. |
 
