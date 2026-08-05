@@ -20,6 +20,21 @@
       }
     },
     {
+      "name": "deslop",
+      "source": {
+        "source": "url",
+        "url": "https://github.com/ProfSynapse/DeSlop.git",
+        "ref": "v1.0.0"
+      },
+      "interface": {
+        "displayName": "DeSlop"
+      },
+      "category": "Productivity",
+      "policy": {
+        "installation": "AVAILABLE"
+      }
+    },
+    {
       "name": "agentic-guardrails",
       "source": {
         "source": "git-subdir",

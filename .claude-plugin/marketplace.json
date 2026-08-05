@@ -17,6 +17,16 @@
       }
     },
     {
+      "name": "deslop",
+      "description": "Remove the signs of AI-generated writing from text: a 36-pattern catalog with per-pattern fix protocols, false-positive adjudication, a no-fabrication rule, and mechanical gates that fail the delivery when a tell survives.",
+      "version": "1.0.0",
+      "source": {
+        "source": "github",
+        "repo": "ProfSynapse/DeSlop",
+        "ref": "v1.0.0"
+      }
+    },
+    {
       "name": "agentic-guardrails",
       "description": "Enterprise guardrails for agentic tools: CRUA (create/read/update/archive, never delete), agent workspace with checkout/publish, sync-aware safety for OneDrive/Drive/Dropbox, and policy-driven command/content blocking.",
       "version": "0.2.2",
