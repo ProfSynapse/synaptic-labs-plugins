@@ -1,0 +1,89 @@
+name: sync marketplace
+
+# Keeps every pinned tag in step with its plugin's latest release.
+#
+# The schedule is the floor, not the mechanism: a plugin repo can trigger this
+# the moment it ships by sending a repository_dispatch of type plugin-released
+# (see README, "Keeping the pins current"). Without that, a release is picked
+# up on the next daily run.
+#
+# This opens a pull request rather than committing to main. The pin is what
+# every install resolves, so a bad tag ships to everyone; a diff of two lines
+# is cheap to read and is the last place a person sees it.
+
+on:
+  schedule:
+    - cron: "17 13 * * *"
+  workflow_dispatch:
+  repository_dispatch:
+    types: [plugin-released]
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: sync-marketplace
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Point every entry at its latest release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        # Written outside the checkout so the report never lands in the commit.
+        run: python3 scripts/sync_marketplace.py | tee "$RUNNER_TEMP/sync-report.txt"
+
+      - name: Open or update the pull request
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          BASE: ${{ github.event.repository.default_branch }}
+        run: |
+          set -euo pipefail
+          if git diff --quiet; then
+            echo "nothing to sync"
+            exit 0
+          fi
+
+          report="$RUNNER_TEMP/sync-report.txt"
+          branch=chore/sync-marketplace
+
+          {
+            echo "chore: point marketplace entries at the latest releases"
+            echo
+            grep -E '^  [a-z0-9-]+: (ref|version) |^  README ' "$report" || true
+          } > "$RUNNER_TEMP/commit-msg.txt"
+
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git checkout -B "$branch"
+          git add -A
+          git commit -F "$RUNNER_TEMP/commit-msg.txt"
+          git push --force-with-lease origin "$branch"
+
+          # A run while a sync PR is already open updates that PR in place
+          # rather than stacking a second one against the same branch.
+          if [ "$(gh pr view "$branch" --json state --jq .state 2>/dev/null || true)" = OPEN ]; then
+            echo "updated the open sync PR"
+            exit 0
+          fi
+
+          {
+            echo 'Opened by `.github/workflows/sync-marketplace.yml`.'
+            echo
+            echo '```'
+            cat "$report"
+            echo '```'
+            echo
+            echo 'Versions and pinned tags only. The descriptions in this repo are'
+            echo 'shortened by hand from each plugin manifest, so the script reports'
+            echo 'drift on them and never rewrites them.'
+          } > "$RUNNER_TEMP/pr-body.txt"
+
+          gh pr create --base "$BASE" --head "$branch" \
+            --title "chore: sync marketplace pins to latest releases" \
+            --body-file "$RUNNER_TEMP/pr-body.txt"
