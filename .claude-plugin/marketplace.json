@@ -18,12 +18,12 @@
     },
     {
       "name": "deslop",
-      "description": "Remove the signs of AI-generated writing from text: a 36-pattern catalog with per-pattern fix protocols, false-positive adjudication, a no-fabrication rule, and mechanical gates that fail the delivery when a tell survives.",
-      "version": "1.0.0",
+      "description": "Remove the signs of AI-generated writing from text: a catalog of tells with per-pattern fix protocols, false-positive adjudication, a no-fabrication rule, and mechanical gates that fail the delivery when a tell survives.",
+      "version": "1.1.0",
       "source": {
         "source": "github",
         "repo": "ProfSynapse/DeSlop",
-        "ref": "v1.0.0"
+        "ref": "v1.1.0"
       }
     },
     {
