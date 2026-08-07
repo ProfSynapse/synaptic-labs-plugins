@@ -1,0 +1,69 @@
+name: check pins
+
+# The merge gate. Nothing reaches main with a pin behind its plugin's latest
+# release.
+#
+# On a pull request this does not merely fail on a stale pin, it fixes it: the
+# sync runs, and any update is committed onto the PR branch before the check
+# reports. A gate that only says "stale" hands the work back to a person for a
+# change no person needed to make.
+#
+# Two cases it cannot fix, and fails on instead:
+#   - a fork PR, where the token cannot push to the contributor's branch
+#   - a push to main, where fixing in place would be committing to main behind
+#     the branch protection this gate exists to support
+# In both, the daily sync-marketplace workflow opens a PR with the same change.
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+  pull-requests: read
+
+jobs:
+  pins:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # Check out the PR head itself, not the merge commit, so a fix can be
+          # committed back onto the contributor's branch.
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+
+      - name: Resolve every pin against its plugin's latest release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: python3 scripts/sync_marketplace.py | tee "$RUNNER_TEMP/pins.txt"
+
+      - name: Commit the fix, or fail if it cannot be committed here
+        env:
+          IS_PR: ${{ github.event_name == 'pull_request' }}
+          SAME_REPO: ${{ github.event.pull_request.head.repo.full_name == github.repository }}
+          HEAD_REF: ${{ github.event.pull_request.head.ref }}
+        run: |
+          set -euo pipefail
+          if git diff --quiet; then
+            echo "pins are current"
+            exit 0
+          fi
+
+          echo "::group::stale pins"
+          cat "$RUNNER_TEMP/pins.txt"
+          echo "::endgroup::"
+
+          if [ "$IS_PR" != true ] || [ "$SAME_REPO" != true ]; then
+            echo "::error::A pin is behind its plugin's latest release and this run" \
+                 "cannot fix it in place. The sync-marketplace workflow will open a" \
+                 "PR with the change, or run scripts/sync_marketplace.py locally."
+            exit 1
+          fi
+
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "chore: sync marketplace pins to latest releases"
+          git push origin "HEAD:$HEAD_REF"
+          echo "::notice::A pin was behind and has been updated on this branch."
