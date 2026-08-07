@@ -1,0 +1,38 @@
+#!/usr/bin/env bash
+# Refuse to push while a marketplace pin is behind its plugin's latest release.
+#
+# The same check CI runs, moved earlier so the answer arrives in a second rather
+# than after a round trip. Install with scripts/install-hooks.sh.
+#
+# Needs network. If GitHub is unreachable the hook says so and lets the push
+# through: a hook that blocks work when the network is down gets uninstalled,
+# and CI still holds the line.
+set -uo pipefail
+
+root="$(git rev-parse --show-toplevel)"
+sync="$root/scripts/sync_marketplace.py"
+[ -f "$sync" ] || exit 0
+
+output=$(GITHUB_TOKEN="${GITHUB_TOKEN:-${GH_TOKEN:-$(gh auth token 2>/dev/null || true)}}" \
+         python3 "$sync" --check 2>&1)
+status=$?
+
+if [ $status -eq 0 ]; then
+  exit 0
+fi
+
+if printf '%s' "$output" | grep -qiE 'urlopen error|timed out|Temporary failure|Name or service not known'; then
+  echo "pre-push: could not reach GitHub to verify pins; allowing the push." >&2
+  exit 0
+fi
+
+echo "$output" >&2
+cat >&2 <<'MSG'
+
+pre-push: a marketplace pin is behind its plugin's latest release.
+
+  python3 scripts/sync_marketplace.py     # apply, then commit and push again
+
+Push anyway with --no-verify if you mean to land this without the bump.
+MSG
+exit 1
