@@ -31,8 +31,8 @@ Claude; `codex plugin marketplace upgrade` in Codex).
 | --- | --- | --- | --- |
 | `skill-crafter` | `v0.2.0` | `v0.2.0` | Build, improve, modularize, validate, and package skills the right way. |
 | `deslop` | `v1.1.0` | `v1.1.0` | Remove the signs of AI-generated writing: catalogued tells, per-pattern fixes, delivery gates. |
-| `agentic-guardrails` | `v0.4.2` | `v0.4.2` | Enterprise guardrails: CRUA, bounded automatic recovery retention, agent workspace, sync-aware safety, policy-driven blocking. |
-| `professor-synapse` | `v3.3.0` | — | A router that summons expert agents on demand, with agent-tagged memory and a summon-gate. |
+| `agentic-guardrails` | `v0.4.3` | `v0.4.3` | Enterprise guardrails: CRUA, bounded automatic recovery retention, agent workspace, sync-aware safety, policy-driven blocking. |
+| `professor-synapse` | `v2.8.0` | — | A router that summons expert agents on demand, with agent-tagged memory and a summon-gate. |
 
 Repos: [skill-crafter](https://github.com/ProfSynapse/skill-crafter) ·
 [DeSlop](https://github.com/ProfSynapse/DeSlop) ·

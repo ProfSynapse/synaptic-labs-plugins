@@ -29,23 +29,23 @@
     {
       "name": "agentic-guardrails",
       "description": "Enterprise guardrails for agentic tools: CRUA (create/read/update/archive, never delete), bounded automatic recovery retention, agent workspace with checkout/publish, sync-aware safety for OneDrive/Drive/Dropbox, and policy-driven command/content blocking.",
-      "version": "0.4.2",
+      "version": "0.4.3",
       "source": {
         "source": "git-subdir",
         "url": "https://github.com/ProfSynapse/agentic-guardrails-plugin",
         "path": "plugin",
-        "ref": "v0.4.2"
+        "ref": "v0.4.3"
       }
     },
     {
       "name": "professor-synapse",
       "description": "A router that summons expert agents on demand, with persistent agent-tagged memory and a summon-gate that keeps work on-persona.",
-      "version": "3.3.0",
+      "version": "3.6.0",
       "source": {
         "source": "git-subdir",
         "url": "https://github.com/ProfSynapse/Professor-Synapse",
         "path": "professor-synapse-plugin",
-        "ref": "v3.3.0"
+        "ref": "v2.8.0"
       }
     }
   ]
