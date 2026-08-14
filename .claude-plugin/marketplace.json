@@ -40,12 +40,12 @@
     {
       "name": "professor-synapse",
       "description": "A router that summons expert agents on demand, with persistent agent-tagged memory and a summon-gate that keeps work on-persona.",
-      "version": "3.3.0",
+      "version": "3.6.0",
       "source": {
         "source": "git-subdir",
         "url": "https://github.com/ProfSynapse/Professor-Synapse",
         "path": "professor-synapse-plugin",
-        "ref": "v3.3.0"
+        "ref": "v2.8.0"
       }
     }
   ]
