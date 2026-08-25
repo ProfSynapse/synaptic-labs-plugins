@@ -64,11 +64,14 @@ jobs:
           git add -A
           git commit -F "$RUNNER_TEMP/commit-msg.txt"
 
-          # actions/checkout fetches the default branch alone, so a lease on
-          # this branch has no remote-tracking ref to compare against and git
-          # refuses the push as "stale info". Fetch the ref when it exists;
-          # when it does not, the fetch fails harmlessly and the push creates it.
-          git fetch origin "+refs/heads/$branch:refs/remotes/origin/$branch" 2>/dev/null || true
+          # actions/checkout clones single-branch, so origin's fetch refspec
+          # covers the default branch alone. A lease reads the remote-tracking
+          # ref, and git will not honour one the refspec does not cover: the
+          # push is refused as "stale info" even after fetching the ref by
+          # hand. Widen the refspec first, then fetch. When the branch does not
+          # exist yet the fetch fails harmlessly and the push creates it.
+          git config --add remote.origin.fetch "+refs/heads/$branch:refs/remotes/origin/$branch"
+          git fetch origin "$branch" 2>/dev/null || true
           git push --force-with-lease origin "$branch"
 
           # A run while a sync PR is already open updates that PR in place
