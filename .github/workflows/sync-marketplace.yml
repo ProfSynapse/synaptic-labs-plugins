@@ -63,6 +63,12 @@ jobs:
           git checkout -B "$branch"
           git add -A
           git commit -F "$RUNNER_TEMP/commit-msg.txt"
+
+          # actions/checkout fetches the default branch alone, so a lease on
+          # this branch has no remote-tracking ref to compare against and git
+          # refuses the push as "stale info". Fetch the ref when it exists;
+          # when it does not, the fetch fails harmlessly and the push creates it.
+          git fetch origin "+refs/heads/$branch:refs/remotes/origin/$branch" 2>/dev/null || true
           git push --force-with-lease origin "$branch"
 
           # A run while a sync PR is already open updates that PR in place
@@ -84,6 +90,18 @@ jobs:
             echo 'drift on them and never rewrites them.'
           } > "$RUNNER_TEMP/pr-body.txt"
 
-          gh pr create --base "$BASE" --head "$branch" \
+          # A denial here leaves the branch pushed and nothing to review it,
+          # which is how this branch was stranded once already. Redirect rather
+          # than pipe: the status has to be gh's own, not tee's.
+          if gh pr create --base "$BASE" --head "$branch" \
             --title "chore: sync marketplace pins to latest releases" \
-            --body-file "$RUNNER_TEMP/pr-body.txt"
+            --body-file "$RUNNER_TEMP/pr-body.txt" > "$RUNNER_TEMP/pr-create.log" 2>&1; then
+            cat "$RUNNER_TEMP/pr-create.log"
+            exit 0
+          fi
+
+          cat "$RUNNER_TEMP/pr-create.log"
+          if grep -q 'not permitted to create or approve pull requests' "$RUNNER_TEMP/pr-create.log"; then
+            echo "::error::Actions may not open pull requests here. Enable Settings -> Actions -> General -> 'Allow GitHub Actions to create and approve pull requests'. The pins are already pushed; until then open it by hand: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/compare/$BASE...$branch"
+          fi
+          exit 1
