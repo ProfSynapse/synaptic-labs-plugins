@@ -13,6 +13,12 @@ name: check pins
 #   - a push to main, where fixing in place would be committing to main behind
 #     the branch protection this gate exists to support
 # In both, the daily sync-marketplace workflow opens a PR with the same change.
+#
+# When it does fix a PR in place it also reports the result against the commit
+# it just wrote. GitHub does create a run for a GITHUB_TOKEN push, but parks it
+# at action_required and never executes it, so that commit would otherwise carry
+# no `pins` check at all -- and `pins` is required on main, so the fix would be
+# what blocks the PR.
 
 on:
   pull_request:
@@ -22,6 +28,7 @@ on:
 permissions:
   contents: write
   pull-requests: read
+  checks: write        # report `pins` against the commit this job writes
 
 jobs:
   pins:
@@ -43,6 +50,7 @@ jobs:
           IS_PR: ${{ github.event_name == 'pull_request' }}
           SAME_REPO: ${{ github.event.pull_request.head.repo.full_name == github.repository }}
           HEAD_REF: ${{ github.event.pull_request.head.ref }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           set -euo pipefail
           if git diff --quiet; then
@@ -67,3 +75,17 @@ jobs:
           git commit -m "chore: sync marketplace pins to latest releases"
           git push origin "HEAD:$HEAD_REF"
           echo "::notice::A pin was behind and has been updated on this branch."
+
+          # Branch protection waits on a `pins` check for the head commit. The run
+          # GitHub creates for the push above is parked at action_required and
+          # never reports, so report it here. This asserts nothing the job has not
+          # just established: the pins on that commit are current because this job
+          # is what made them so.
+          gh api -X POST "repos/$GITHUB_REPOSITORY/check-runs" \
+            -f name=pins \
+            -f head_sha="$(git rev-parse HEAD)" \
+            -f status=completed \
+            -f conclusion=success \
+            -f 'output[title]=Pins updated on this branch' \
+            -f 'output[summary]=A pin was behind its plugin latest release. check-pins committed the update to this branch and reported the result here, because the run GitHub creates for a GITHUB_TOKEN push is parked awaiting approval and never reports.' \
+            > /dev/null
