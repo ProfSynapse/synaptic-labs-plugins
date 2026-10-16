@@ -5,6 +5,12 @@ A marketplace of Synaptic Labs plugins for both
 One repo address serves both: Claude reads `.claude-plugin/marketplace.json`,
 Codex reads `.agents/plugins/marketplace.json`.
 
+**First catalog release:** `v0.1.0`. Installations read these indexes from `main`
+and fetch each plugin at its own pinned release tag.
+
+**Guardrails 0.7.0 upgrade:** Codex users must review and enable the changed
+Guardrails hooks through `/hooks` or the desktop trust dialog, then start a new task.
+
 ## Use it
 
 **Claude Code:**
@@ -31,7 +37,7 @@ Claude; `codex plugin marketplace upgrade` in Codex).
 | --- | --- | --- | --- |
 | `skill-crafter` | `v0.2.0` | `v0.2.0` | Build, improve, modularize, validate, and package skills the right way. |
 | `deslop` | `v1.1.0` | `v1.1.0` | Remove the signs of AI-generated writing: catalogued tells, per-pattern fixes, delivery gates. |
-| `agentic-guardrails` | `v0.5.0` | `v0.5.0` | Enterprise guardrails: CRUA, bounded automatic recovery retention, agent workspace, sync-aware safety, policy-driven blocking. |
+| `agentic-guardrails` | `v0.7.0` | `v0.7.0` | Reversible changes, automatic recovery cleanup, separate document/media budgets and protected media choices. |
 | `professor-synapse` | `v3.7.0` | — | A router that summons expert agents on demand, with agent-tagged memory and a summon-gate. |
 
 Repos: [skill-crafter](https://github.com/ProfSynapse/skill-crafter) ·
